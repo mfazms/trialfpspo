@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:coverage": "jest --coverage",
+    "sonar": "npm run test:coverage && sonar-scanner"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
