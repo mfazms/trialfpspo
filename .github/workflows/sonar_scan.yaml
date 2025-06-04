@@ -1,0 +1,42 @@
+name: SonarQube Analysis
+
+on:
+  workflow_call: {}
+
+jobs:
+  sonar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Run SonarQube Scanner
+        uses: SonarSource/sonarqube-scan-action@v2
+        with:
+          args: >
+            -Dsonar.projectKey=fp-pso-fe
+            -Dsonar.sources=.
+            -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts,**/*.test.ts,**/*.d.ts
+            -Dsonar.tests=.
+            -Dsonar.test.inclusions=**/*.test.ts,**/*.spec.ts
+            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
