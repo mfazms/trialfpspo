@@ -68,7 +68,22 @@ jobs:
       - name: Install Sonar Scanner CLI
         run: npm install -g sonar-scanner
 
-      - name: Run SonarCloud Scanner
-        run: npm run sonar
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Start SonarQube container
+        run: |
+          docker run -d --name sonarqube \
+            -p 9000:9000 \
+            -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true \
+            sonarqube:community
+          echo "Waiting for SonarQube to start..."
+          sleep 60  # Tunggu sampai SonarQube siap menerima request
+
+      - name: Run Jest coverage
+        run: npm run test:coverage -- --passWithNoTests
+
+      - name: Run SonarQube Scanner
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=fp-pso-fe \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=http://localhost:9000 \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
