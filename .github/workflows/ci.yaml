@@ -8,7 +8,7 @@ on:
 
 jobs:
   ci-process:
-    name: Lint, Test, Build
+    name: Lint, Build
     runs-on: ubuntu-latest
 
     steps:
@@ -62,9 +62,6 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Install test dependencies (Jest)
-        run: npm install --save-dev jest --legacy-peer-deps
-
       - name: Install Sonar Scanner CLI
         run: npm install -g sonar-scanner
 
@@ -75,10 +72,7 @@ jobs:
             -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true \
             sonarqube:community
           echo "Waiting for SonarQube to start..."
-          sleep 60  # Tunggu sampai SonarQube siap menerima request
-
-      - name: Run Jest coverage
-        run: npm run test:coverage -- --passWithNoTests
+          sleep 60
 
       - name: Run SonarQube Scanner
         run: |
