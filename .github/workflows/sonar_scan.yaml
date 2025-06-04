@@ -27,6 +27,13 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
+      - name: Cek token terisi atau tidak
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          echo "Token: $SONAR_TOKEN"
+          echo "Token length: ${#SONAR_TOKEN}"
+
       - name: Run SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
