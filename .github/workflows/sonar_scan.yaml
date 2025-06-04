@@ -37,6 +37,11 @@ jobs:
             -Dsonar.tests=.
             -Dsonar.test.inclusions=**/*.test.ts,**/*.spec.ts
             -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+      
+      - name: Debug env
+        run: |
+          echo "SONAR_HOST_URL is $SONAR_HOST_URL"
+          echo "SONAR_TOKEN is ${#SONAR_TOKEN}" # hanya cek panjang token, bukan tampilkan token 
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
