@@ -45,7 +45,24 @@ jobs:
           NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
 
-  sonar-scan:
+  sonar:
     name: Static Code Analysis
+    runs-on: ubuntu-latest
     needs: ci-process
-    uses: ./.github/workflows/sonar_scan.yaml
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Run SonarCloud Scanner
+        run: npm run sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
