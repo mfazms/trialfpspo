@@ -1,4 +1,4 @@
-name: SonarQube Analysis
+name: SonarCloud Analysis
 
 on:
   workflow_call: {}
@@ -27,22 +27,17 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Run SonarQube Scanner
-        uses: SonarSource/sonarqube-scan-action@v2
+      - name: Run SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
         with:
+          projectBaseDir: .
           args: >
             -Dsonar.projectKey=fp-pso-fe
+            -Dsonar.organization=nama_organisasi_sonarcloud
             -Dsonar.sources=.
             -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts,**/*.test.ts,**/*.d.ts
             -Dsonar.tests=.
             -Dsonar.test.inclusions=**/*.test.ts,**/*.spec.ts
             -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
-      
-      - name: Debug env
-        run: |
-          echo "SONAR_HOST_URL is $SONAR_HOST_URL"
-          echo "SONAR_TOKEN is ${#SONAR_TOKEN}" # hanya cek panjang token, bukan tampilkan token 
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          HUBGIT_TOKEN: ${{ secrets.HUBGIT_TOKEN }}
